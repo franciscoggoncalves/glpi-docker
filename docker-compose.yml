@@ -1,0 +1,31 @@
+services:
+  db:
+    image: mariadb:10.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: glpidb
+      MYSQL_USER: glpi_user
+      MYSQL_PASSWORD: glpi_password
+    volumes:
+      - db_data:/var/lib/mysql
+
+  glpi:
+    image: elestio/glpi:latest
+    restart: always
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      - GLPI_LANG=pt_BR
+      - MARIADB_HOST=db
+      - MARIADB_DATABASE=glpidb
+      - MARIADB_USER=glpi_user
+      - MARIADB_PASSWORD=glpi_password
+    volumes:
+      - glpi_data:/var/www/html/glpi
+
+volumes:
+  db_data:
+  glpi_data:
